@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% load static %}
+        <!-- Font Awesome -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
+        <!-- MDB -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.2.0/mdb.min.css" rel="stylesheet"/>
+
+        
+        <style>
+            table {
+                border-collapse: collapse;
+                max-height: 200em;            
+              }
+              th{
+                padding : 10px;
+              }
+              td{
+                padding : 10px;
+              }
+        </style>
+    </head>
+
+
+    <body style="background-color : #314452; padding:100px">
+       
+        <div class="container d-flex align-items-center justify-content-center" style="height: 50px;">
+         
+            <form class="text-center" style="width:50%;" enctype="multipart/form-data"  method="POST" action="{% url 'INSERTIONPLATFORM:pipline' %}">
+                {% csrf_token %}
+                <label class="form-label text-white" for="customFile_srs_file">Software Requirements Specification File</label>
+                <input type="file" class="form-control" id="customFile_srs_file" name="srs_file" required/>
+                <br/>
+                <div class=" d-grid gap-2 col-6 mx-auto">
+                    <button class="btn btn-primary" type="submit">SUBMIT</button>
+                </div>
+            </section>
+            <form>        
+        </div>
+
+
+        {% if data %}  
+        
+            <div class="container" style="height: 50px; padding:25px;">
+
+                <div class="row">
+                    <p id="unambiguous_B" class="text-white" style="cursor: pointer;">unambiguous <em>{{ data.len_unambiguous }}</em></p>
+                    <p id="ambiguous_B" class="text-white" style="cursor: pointer;">ambiguous {{ data.len_ambiguous }}</p>
+                    <p id="nfr_B" class="text-white" style="cursor: pointer;">nfr <em>{{data.len_nfr}}</em></p>
+                    <p id="fur_B" class="text-white" style="cursor: pointer;">fur <em>{{data.len_fur}}</em></p>
+                    <p id="dm_B" class="text-white">data mouvements <em>{{data.len_data_mouvements}}</em></p>
+                </div>
+
+                {% for fp in data.fps %}
+                     
+                        <div class="rows" style="mrgin : 50px;">
+                            <div class="table-responsive">
+                                <p class="text-white">{{fp.content}}</p>
+                                {% if fp.ambiguous %}
+                                    <table id="ambiguous_DIV" class="table-dark" style="padding : 10px; display : block;">
+                                        <tr>
+                                            <th>ambiguous</th>
+                                            <th>optionality</th>
+                                            <th>weakness</th>
+                                            <th>vagueness</th>
+                                            <th>subjectivity</th>
+                                            <th>multi_vrb</th>
+                                            <th>multi_subj</th>
+                                            <th>objects</th>
+                                            <th>implicity</th>
+                                        </tr>
+
+                                        {% for instnce in fp.ambiguous %}
+                                            <tr>
+                                                <td>
+                                                    {{instnce.0}}
+                                                </td>
+                                                <td>
+                                                    {%if instnce.1.content.words_optionality %} 
+                                                        {{instnce.1.content.words_optionality}}
+                                                        <br/>
+                                                    {%endif%}
+                                                    {{instnce.1.prameters.p_optionality}}
+                                                </td>
+                                                <td>
+                                                    {%if instnce.1.content.words_weakness %} 
+                                                        {{instnce.1.content.words_weakness}}
+                                                        <br/>
+                                                    {%endif%}
+                                                    {{instnce.1.prameters.p_weakness}}
+                                                </td>
+                                                <td>
+                                                    {%if instnce.1.content.words_vagueness %} 
+                                                        {{instnce.1.content.words_vagueness}}
+                                                        <br/>
+                                                    {%endif%}
+
+                                                    {{instnce.1.prameters.p_vagueness}}
+                                                </td>
+                                                <td>
+                                                    {{instnce.1.prameters.p_subjectivity}}
+                                                </td>
+                                                
+                                                <td>
+                                                    {%if instnce.1.content.verbs %} 
+                                                        {{instnce.1.content.verbs}}
+                                                        <br/>
+                                                    {%endif%}
+                                                    {{instnce.1.prameters.p_multi_vrb}}
+                                                </td>
+                                                <td>
+                                                    {%if instnce.1.content.subjects %} 
+                                                        {{instnce.1.content.subjects}}
+                                                        <br/>
+                                                    {%endif%}
+                                                    {{instnce.1.prameters.p_multi_subj}}
+                                                </td>
+                                                <td>
+                                                    {{instnce.1.content.objects}}
+                                                </td>
+                                                <td>
+                                                    {%if instnce.1.content.implicity %} 
+                                                        {{instnce.1.content.implicity}}
+                                                        <br/>
+                                                    {%endif%}
+                                                    {{instnce.1.prameters.p_implicity}}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                {% endif %}
+                                
+                                {% if fp.unambiguous %}
+                                    <table id="unambiguous_DIV" class="table-dark" style="padding : 10px;  display : block;">
+                                        <tr>
+                                            <th>unambiguous</th>
+                                            <th>optionality</th>
+                                            <th>weakness</th>
+                                            <th>vagueness</th>
+                                            <th>subjectivity</th>
+                                            <th>multi_vrb</th>
+                                            <th>multi_subj</th>
+                                            <th>objects</th>
+                                            <th>implicity</th>
+                                        </tr>
+
+                                        {% for instnce in fp.unambiguous %}
+                                            <tr>
+                                                <td>
+                                                    {{instnce.0}}
+                                                </td>
+                                                <td>
+                                                    {%if instnce.1.content.words_optionality %} 
+                                                        {{instnce.1.content.words_optionality}}
+                                                        <br/>
+                                                    {%endif%}
+                                                    {{instnce.1.prameters.p_optionality}}
+                                                </td>
+                                                <td>
+                                                    {%if instnce.1.content.words_weakness %} 
+                                                        {{instnce.1.content.words_weakness}}
+                                                        <br/>
+                                                    {%endif%}
+                                                    {{instnce.1.prameters.p_weakness}}
+                                                </td>
+                                                <td>
+                                                    {%if instnce.1.content.words_vagueness %} 
+                                                        {{instnce.1.content.words_vagueness}}
+                                                        <br/>
+                                                    {%endif%}
+
+                                                    {{instnce.1.prameters.p_vagueness}}
+                                                </td>
+                                                <td>
+                                                    {{instnce.1.prameters.p_subjectivity}}
+                                                </td>
+                                                
+                                                <td>
+                                                    {%if instnce.1.content.verbs %} 
+                                                        {{instnce.1.content.verbs}}
+                                                        <br/>
+                                                    {%endif%}
+                                                    {{instnce.1.prameters.p_multi_vrb}}
+                                                </td>
+                                                <td>
+                                                    {%if instnce.1.content.subjects %} 
+                                                        {{instnce.1.content.subjects}}
+                                                        <br/>
+                                                    {%endif%}
+                                                    {{instnce.1.prameters.p_multi_subj}}
+                                                </td>
+                                                <td>
+                                                    {{instnce.1.content.objects}}
+                                                </td>
+                                                <td>
+                                                    {%if instnce.1.content.implicity %} 
+                                                        {{instnce.1.content.implicity}}
+                                                        <br/>
+                                                    {%endif%}
+                                                    {{instnce.1.prameters.p_implicity}}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                {% endif %}
+
+                                {% if fp.nfr %}
+                                    <table id="nfr_DIV" class="table-dark" style="padding : 10px; display : block;">
+                                        <tr>
+                                            <th>nfr</th>
+                                        </tr>
+                                        {% for instnce in fp.nfr %}
+                                            <tr>
+                                                <td>
+                                                    {{instnce}}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                {% endif %}
+
+                                {% if fp.fur %}
+                                    <table id="fur_DIV" class="table-dark" style="padding : 10px; display : block;">
+                                        <tr>
+                                            <th>fur</th>
+                                        </tr>
+                    
+                                        {% for instnce in fp.fur %}
+                                            <tr>
+                                                <td>
+                                                    {{instnce}}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                {% endif %}
+
+
+                                {% if fp.data_mouvements %}
+                                    <table id="dm_DIV" class="table-dark" style="padding : 10px; display : block;">
+                                        <tr>
+                                            <th>data mouvements</th>    
+                                        </tr>
+                    
+                                        {% for instnce in fp.data_mouvements %}
+                                            <tr>
+                                                <td>
+                                                    {{instnce}}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                    
+                                    </table>
+                                {% endif %}
+
+                            </div>
+                        </div>  
+
+
+                {% endfor %}
+
+            </div>
+        {% endif %}
+
+       
+       
+       <script type="text/javascript">
+            list_b = ["ambiguous" , "unambiguous", "nfr", "fur", "dm" ]
+
+            list_b.forEach(element => {
+                b = document.getElementById(element+'_B');
+                b.onclick = function() {
+                    var x = document.getElementById(element+'_DIV');
+                    if (x.style.display === 'none') {
+                    x.style.display = 'block';
+                    } else {
+                    x.style.display = 'none';
+                    }
+                }
+
+            });
+
+            
+        </script>
+       
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.2.0/mdb.min.js"></script>
+
+                                 
+    </body>
+</html>
